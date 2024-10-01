@@ -1,4 +1,4 @@
-package repository
+package sqlite
 
 import (
 	"context"
@@ -9,10 +9,10 @@ type ExpenseRepository struct {
 	// Add any necessary fields
 }
 
-func NewExpenseRepository() ExpenseRepository {
-	return ExpenseRepository{}
+func NewExpenseRepository() *ExpenseRepository {
+	return &ExpenseRepository{}
 }
 
-func (r ExpenseRepository) Store(ctx context.Context, expense *domain.Expense) error {
+func (r *ExpenseRepository) Store(ctx context.Context, expense *domain.Expense) error {
 	return nil
 }

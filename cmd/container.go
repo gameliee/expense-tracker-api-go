@@ -8,23 +8,23 @@ import (
 )
 
 type Container struct {
-	Config            config.Config
-	UserRepository    sqliteRepo.UserRepository
-	ExpenseRepository sqliteRepo.ExpenseRepository
-	UserService       service.UserService
-	ExpenseService    service.ExpenseService
-	UserHandler       http.UserHandler
-	ExpenseHandler    http.ExpenseHandler
+	Config            *config.Config
+	UserRepository    *sqliteRepo.UserRepository
+	ExpenseRepository *sqliteRepo.ExpenseRepository
+	UserService       *service.UserService
+	ExpenseService    *service.ExpenseService
+	UserHandler       *http.UserHandler
+	ExpenseHandler    *http.ExpenseHandler
 }
 
 func NewContainer(
-	config config.Config,
-	userRepository sqliteRepo.UserRepository,
-	expenseRepository sqliteRepo.ExpenseRepository,
-	userService service.UserService,
-	expenseService service.ExpenseService,
-	userHandler http.UserHandler,
-	expenseHandler http.ExpenseHandler,
+	config *config.Config,
+	userRepository *sqliteRepo.UserRepository,
+	expenseRepository *sqliteRepo.ExpenseRepository,
+	userService *service.UserService,
+	expenseService *service.ExpenseService,
+	userHandler *http.UserHandler,
+	expenseHandler *http.ExpenseHandler,
 ) Container {
 	return Container{
 		Config:            config,

@@ -6,16 +6,16 @@ import (
 	"net/http"
 )
 
-type ExpenseService interface {
+type ExpenseServiceInt interface {
 	Store(ctx context.Context, expense *domain.Expense) (err error)
 }
 
 type ExpenseHandler struct {
-	ExpenseService ExpenseService
+	ExpenseService ExpenseServiceInt
 }
 
-func NewExpenseHandler(expenseService ExpenseService) ExpenseHandler {
-	return ExpenseHandler{
+func NewExpenseHandler(expenseService ExpenseServiceInt) *ExpenseHandler {
+	return &ExpenseHandler{
 		ExpenseService: expenseService,
 	}
 }

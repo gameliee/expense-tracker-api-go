@@ -7,17 +7,17 @@ import (
 	"gamelieelearn/expense-tracker-api-go/domain"
 )
 
-type UserService interface {
+type UserServiceInt interface {
 	Store(ctx context.Context, u *domain.User) (err error)
 	GetByID(ctx context.Context, id int64) (res domain.User, err error)
 }
 
 type UserHandler struct {
-	UserService UserService
+	UserService UserServiceInt
 }
 
-func NewUserHandler(userService UserService) UserHandler {
-	return UserHandler{
+func NewUserHandler(userService UserServiceInt) *UserHandler {
+	return &UserHandler{
 		UserService: userService,
 	}
 }
