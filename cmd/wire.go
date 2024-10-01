@@ -14,15 +14,15 @@ import (
 
 func InitializeContainer() (Container, error) {
 	wire.Build(
+		wire.Bind(new(service.UserRepositoryInt), new(*sqliteRepo.UserRepository)),
+		wire.Bind(new(service.ExpenseRepositoryInt), new(*sqliteRepo.ExpenseRepository)),
+		wire.Bind(new(http.UserServiceInt), new(*service.UserService)),
+		wire.Bind(new(http.ExpenseServiceInt), new(*service.ExpenseService)),
 		config.NewConfig,
 		sqliteRepo.NewUserRepository,
-		wire.Bind(new(service.UserRepository), new(sqliteRepo.UserRepository)),
 		sqliteRepo.NewExpenseRepository,
-		wire.Bind(new(service.ExpenseRepository), new(sqliteRepo.ExpenseRepository)),
 		service.NewUserService,
 		service.NewExpenseService,
-		wire.Bind(new(http.UserService), new(service.UserService)),
-		wire.Bind(new(http.ExpenseService), new(service.ExpenseService)),
 		http.NewUserHandler,
 		http.NewExpenseHandler,
 		NewContainer,

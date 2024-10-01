@@ -17,8 +17,8 @@ import (
 
 func InitializeContainer() (Container, error) {
 	configConfig := config.NewConfig()
-	userRepository := repository.NewUserRepository()
-	expenseRepository := repository.NewExpenseRepository()
+	userRepository := sqlite.NewUserRepository()
+	expenseRepository := sqlite.NewExpenseRepository()
 	userService := service.NewUserService(userRepository)
 	expenseService, err := service.NewExpenseService(expenseRepository, userService)
 	if err != nil {

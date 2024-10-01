@@ -4,6 +4,6 @@ type Config struct {
 	// Add configuration fields
 }
 
-func NewConfig() Config {
-	return Config{}
+func NewConfig() *Config {
+	return &Config{}
 }
