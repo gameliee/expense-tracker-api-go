@@ -5,6 +5,7 @@ import (
 	"gamelieelearn/expense-tracker-api-go/domain"
 )
 
+//go:generate mockery --name UserRepositoryInt --structname UserRepository
 type UserRepositoryInt interface {
 	Store(ctx context.Context, u *domain.User) error
 	GetByID(ctx context.Context, id int64) (domain.User, error)
