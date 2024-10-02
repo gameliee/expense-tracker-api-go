@@ -1,0 +1,25 @@
+name: Go Test CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-22.04
+    strategy:
+      max-parallel: 4
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Setup Go environment
+      uses: actions/setup-go@v5.0.2
+      with:
+        go-version: '^1.13.1' # The Go version to download (if necessary) and use.
+    - name: Run Test
+      working-directory: .
+      run: |
+        make test
