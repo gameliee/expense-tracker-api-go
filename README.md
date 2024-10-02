@@ -31,3 +31,9 @@ A simple expense tracker in Go
     ├── expense_service.go
     └── user_service.go
 ```
+
+Dependencies
+
+```bash
+brew install mockery
+```
