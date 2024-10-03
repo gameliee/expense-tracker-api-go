@@ -31,3 +31,24 @@ func TestGetById(t *testing.T) {
 		mockUserRepository.AssertExpectations(t)
 	})
 }
+
+func TestStore(t *testing.T) {
+	mockUserRepository := mocks.NewUserRepository(t)
+	mockUser := domain.User{
+		ID:        1,
+		Name:      "mockUser",
+		CreatedAt: "2019-03-07 15:08:00 +0000 UTC",
+		UpdatedAt: "2019-03-07 15:08:00 +0000 UTC",
+	}
+	t.Run("success", func(t *testing.T) {
+		mockUserRepository.On("Store", mock.Anything, mock.AnythingOfType("*domain.User")).Return(nil).Once()
+		tempMockUser := mockUser
+		tempMockUser.ID = 0
+
+		userService := service.NewUserService(mockUserRepository)
+		err := userService.Store(context.TODO(), &mockUser)
+
+		assert.NoError(t, err)
+		assert.Equal(t, mockUser.Name, tempMockUser.Name)
+	})
+}
