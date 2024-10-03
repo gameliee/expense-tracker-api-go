@@ -26,6 +26,7 @@ func InitializeContainer() (Container, error) {
 		http.NewUserHandler,
 		http.NewExpenseHandler,
 		NewContainer,
+		InitDB,
 	)
 	return Container{}, nil
 }

@@ -2,15 +2,16 @@ package sqlite
 
 import (
 	"context"
+	"database/sql"
 	"gamelieelearn/expense-tracker-api-go/domain"
 )
 
 type UserRepository struct {
-	// Add any necessary fields
+	DB *sql.DB
 }
 
-func NewUserRepository() *UserRepository {
-	return &UserRepository{}
+func NewUserRepository(db *sql.DB) *UserRepository {
+	return &UserRepository{DB: db}
 }
 
 func (r *UserRepository) GetByID(ctx context.Context, id int64) (domain.User, error) {
