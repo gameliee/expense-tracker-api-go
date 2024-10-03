@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestGetById(t *testing.T) {
+func TestUserGetById(t *testing.T) {
 
 	mockUserRepository := mocks.NewUserRepository(t)
 	mockUser := domain.User{
@@ -32,7 +32,7 @@ func TestGetById(t *testing.T) {
 	})
 }
 
-func TestStore(t *testing.T) {
+func TestUserStore(t *testing.T) {
 	mockUserRepository := mocks.NewUserRepository(t)
 	mockUser := domain.User{
 		ID:        1,
