@@ -13,11 +13,19 @@ import (
 	"gamelieelearn/expense-tracker-api-go/service"
 )
 
+import (
+	_ "github.com/mattn/go-sqlite3"
+)
+
 // Injectors from wire.go:
 
 func InitializeContainer() (Container, error) {
 	configConfig := config.NewConfig()
-	userRepository := sqlite.NewUserRepository()
+	db, err := InitDB(configConfig)
+	if err != nil {
+		return Container{}, err
+	}
+	userRepository := sqlite.NewUserRepository(db)
 	expenseRepository := sqlite.NewExpenseRepository()
 	userService := service.NewUserService(userRepository)
 	expenseService, err := service.NewExpenseService(expenseRepository, userService)
