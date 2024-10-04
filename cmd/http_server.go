@@ -11,8 +11,8 @@ import (
 // @version	0.1
 // @host		localhost:8080
 // @BasePath	/
-func InitHttp(container *Container) (e *echo.Echo, err error) {
-	e = echo.New()
+func AttachEndpoints(container *Container) error {
+	e := container.EchoServer
 
 	// Swagger documentation
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
@@ -31,7 +31,11 @@ func InitHttp(container *Container) (e *echo.Echo, err error) {
 	e.DELETE("/expenses/:id", container.ExpenseHandler.DeleteExpense)
 	e.GET("/expenses", container.ExpenseHandler.ListExpenses)
 	e.GET("/users/:user_id/expenses", container.ExpenseHandler.GetExpensesByUserID)
+	return nil
+}
 
+func InitHttp() (e *echo.Echo, err error) {
+	e = echo.New()
 	err = nil
 	return
 }

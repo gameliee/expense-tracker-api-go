@@ -1,10 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"gamelieelearn/expense-tracker-api-go/config"
 	"gamelieelearn/expense-tracker-api-go/internal/http"
 	sqliteRepo "gamelieelearn/expense-tracker-api-go/internal/repository/sqlite"
 	"gamelieelearn/expense-tracker-api-go/service"
+
+	"github.com/labstack/echo/v4"
 )
 
 type Container struct {
@@ -15,6 +18,8 @@ type Container struct {
 	ExpenseService    *service.ExpenseService
 	UserHandler       *http.UserHandler
 	ExpenseHandler    *http.ExpenseHandler
+	EchoServer        *echo.Echo
+	DB                *sql.DB
 }
 
 func NewContainer(
@@ -25,6 +30,8 @@ func NewContainer(
 	expenseService *service.ExpenseService,
 	userHandler *http.UserHandler,
 	expenseHandler *http.ExpenseHandler,
+	echoServer *echo.Echo,
+	db *sql.DB,
 ) *Container {
 	return &Container{
 		Config:            config,
@@ -34,5 +41,7 @@ func NewContainer(
 		ExpenseService:    expenseService,
 		UserHandler:       userHandler,
 		ExpenseHandler:    expenseHandler,
+		EchoServer:        echoServer,
+		DB:                db,
 	}
 }
