@@ -11,6 +11,7 @@ import (
 	"gamelieelearn/expense-tracker-api-go/internal/http"
 	"gamelieelearn/expense-tracker-api-go/internal/repository/sqlite"
 	"gamelieelearn/expense-tracker-api-go/service"
+	"github.com/labstack/echo/v4"
 )
 
 import (
@@ -19,21 +20,25 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeContainer() (Container, error) {
+func InitializeContainer() (*echo.Echo, error) {
 	configConfig := config.NewConfig()
 	db, err := InitDB(configConfig)
 	if err != nil {
-		return Container{}, err
+		return nil, err
 	}
 	userRepository := sqlite.NewUserRepository(db)
 	expenseRepository := sqlite.NewExpenseRepository()
 	userService := service.NewUserService(userRepository)
 	expenseService, err := service.NewExpenseService(expenseRepository, userService)
 	if err != nil {
-		return Container{}, err
+		return nil, err
 	}
 	userHandler := http.NewUserHandler(userService)
 	expenseHandler := http.NewExpenseHandler(expenseService)
 	container := NewContainer(configConfig, userRepository, expenseRepository, userService, expenseService, userHandler, expenseHandler)
-	return container, nil
+	echoEcho, err := InitHttp(container)
+	if err != nil {
+		return nil, err
+	}
+	return echoEcho, nil
 }

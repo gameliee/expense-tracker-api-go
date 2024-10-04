@@ -10,9 +10,10 @@ import (
 	"gamelieelearn/expense-tracker-api-go/service"
 
 	"github.com/google/wire"
+	"github.com/labstack/echo/v4"
 )
 
-func InitializeContainer() (Container, error) {
+func InitializeContainer() (*echo.Echo, error) {
 	wire.Build(
 		wire.Bind(new(service.UserRepositoryInt), new(*sqliteRepo.UserRepository)),
 		wire.Bind(new(service.ExpenseRepositoryInt), new(*sqliteRepo.ExpenseRepository)),
@@ -27,6 +28,7 @@ func InitializeContainer() (Container, error) {
 		http.NewExpenseHandler,
 		NewContainer,
 		InitDB,
+		InitHttp,
 	)
-	return Container{}, nil
+	return &echo.Echo{}, nil
 }

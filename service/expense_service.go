@@ -5,6 +5,7 @@ import (
 	"gamelieelearn/expense-tracker-api-go/domain"
 )
 
+//go:generate mockery --name ExpenseRepositoryInt --structname ExpenseRepository
 type ExpenseRepositoryInt interface {
 	Store(ctx context.Context, expense *domain.Expense) error
 }
