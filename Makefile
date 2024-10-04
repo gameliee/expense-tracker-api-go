@@ -4,5 +4,9 @@ build:
 go-generate:
 	go generate ./...
 
+swag:
+	swag init --dir cmd
+	swag fmt
+
 test:
 	go test ./...

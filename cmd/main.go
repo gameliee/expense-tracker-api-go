@@ -10,6 +10,6 @@ func main() {
 		log.Fatalf("Failed to initialize container: %v", err)
 	}
 
-	log.Println("Server starting on :8080")
+	log.Println("Server starting on :8080, swagger at http://localhost:8080/swagger/index.html")
 	log.Fatal(echo.Start(":8080"))
 }
