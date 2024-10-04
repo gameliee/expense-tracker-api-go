@@ -29,12 +29,21 @@ func NewUserHandler(userService UserServiceInt) *UserHandler {
 	}
 }
 
+// GetUser godoc
+//	@Summary		Get a user by ID
+//	@Description	get user by ID
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"User ID"
+//	@Success		200	{object}	domain.User
+//	@Failure		400	{object}	ResponseError
+//	@Failure		404	{object}	ResponseError
+//	@Router			/users/{id} [get]
 func (h *UserHandler) GetUser(c echo.Context) error {
 	idP, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "invalid id",
-		})
+		return c.JSON(http.StatusBadRequest, ResponseError{Message: "invalid id"})
 	}
 	id := int64(idP)
 	ctx := c.Request().Context()

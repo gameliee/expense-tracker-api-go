@@ -5,7 +5,7 @@ go-generate:
 	go generate ./...
 
 swag:
-	swag init --dir cmd
+	swag init -g http_server.go -d cmd,internal/http,domain
 	swag fmt
 
 test:
