@@ -25,8 +25,8 @@ func NewContainer(
 	expenseService *service.ExpenseService,
 	userHandler *http.UserHandler,
 	expenseHandler *http.ExpenseHandler,
-) Container {
-	return Container{
+) *Container {
+	return &Container{
 		Config:            config,
 		UserRepository:    userRepository,
 		ExpenseRepository: expenseRepository,
