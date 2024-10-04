@@ -1,0 +1,54 @@
+basePath: /
+definitions:
+  domain.User:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  http.ResponseError:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Simple Expense Tracker
+  version: "0.1"
+paths:
+  /users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.ResponseError'
+      summary: Get a user by ID
+      tags:
+      - users
+swagger: "2.0"
