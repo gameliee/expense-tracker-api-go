@@ -73,7 +73,7 @@ func (r *UserRepository) GetAll(ctx context.Context) ([]domain.User, error) {
 	query := `SELECT id, name, created_at, updated_at FROM users`
 	rows, err := r.DB.QueryContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return []domain.User{}, err
 	}
 	defer rows.Close()
 
@@ -82,13 +82,13 @@ func (r *UserRepository) GetAll(ctx context.Context) ([]domain.User, error) {
 		var user domain.User
 		err := rows.Scan(&user.ID, &user.Name, &user.CreatedAt, &user.UpdatedAt)
 		if err != nil {
-			return nil, err
+			return []domain.User{}, err
 		}
 		users = append(users, user)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return []domain.User{}, err
 	}
 
 	return users, nil

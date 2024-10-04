@@ -66,7 +66,7 @@ func (r *ExpenseRepository) GetAll(ctx context.Context) ([]domain.Expense, error
 	query := `SELECT id, user_id, name, description, amount, created_at FROM expenses`
 	rows, err := r.DB.QueryContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return []domain.Expense{}, err
 	}
 	defer rows.Close()
 
@@ -75,13 +75,13 @@ func (r *ExpenseRepository) GetAll(ctx context.Context) ([]domain.Expense, error
 		var expense domain.Expense
 		err := rows.Scan(&expense.ID, &expense.User_ID, &expense.Name, &expense.Description, &expense.Amount, &expense.CreatedAt)
 		if err != nil {
-			return nil, err
+			return []domain.Expense{}, err
 		}
 		expenses = append(expenses, expense)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return []domain.Expense{}, err
 	}
 
 	return expenses, nil
@@ -91,7 +91,7 @@ func (r *ExpenseRepository) GetByUserID(ctx context.Context, userID int64) ([]do
 	query := `SELECT id, user_id, name, description, amount, created_at FROM expenses WHERE user_id = ?`
 	rows, err := r.DB.QueryContext(ctx, query, userID)
 	if err != nil {
-		return nil, err
+		return []domain.Expense{}, err
 	}
 	defer rows.Close()
 
@@ -100,13 +100,13 @@ func (r *ExpenseRepository) GetByUserID(ctx context.Context, userID int64) ([]do
 		var expense domain.Expense
 		err := rows.Scan(&expense.ID, &expense.User_ID, &expense.Name, &expense.Description, &expense.Amount, &expense.CreatedAt)
 		if err != nil {
-			return nil, err
+			return []domain.Expense{}, err
 		}
 		expenses = append(expenses, expense)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return []domain.Expense{}, err
 	}
 
 	return expenses, nil
