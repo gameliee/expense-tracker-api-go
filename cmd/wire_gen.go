@@ -15,6 +15,7 @@ import (
 )
 
 import (
+	_ "gamelieelearn/expense-tracker-api-go/docs"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -27,7 +28,7 @@ func InitializeContainer() (*echo.Echo, error) {
 		return nil, err
 	}
 	userRepository := sqlite.NewUserRepository(db)
-	expenseRepository := sqlite.NewExpenseRepository()
+	expenseRepository := sqlite.NewExpenseRepository(db)
 	userService := service.NewUserService(userRepository)
 	expenseService, err := service.NewExpenseService(expenseRepository, userService)
 	if err != nil {
