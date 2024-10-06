@@ -27,7 +27,7 @@ func TestExpenseStore(t *testing.T) {
 	}
 
 	t.Run("success", func(t *testing.T) {
-		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{ID: 1}, nil)
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{ID: 1}, nil).Once()
 		mockExpenseRepo.On("Store", mock.Anything, mockExpense).Return(nil)
 
 		err := expenseService.Store(context.TODO(), mockExpense)
@@ -38,7 +38,7 @@ func TestExpenseStore(t *testing.T) {
 	})
 
 	t.Run("user not found", func(t *testing.T) {
-		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{}, errors.New("user not found"))
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{}, errors.New("user not found")).Once()
 
 		err := expenseService.Store(context.TODO(), mockExpense)
 
@@ -89,7 +89,7 @@ func TestExpenseUpdate(t *testing.T) {
 	}
 
 	t.Run("success", func(t *testing.T) {
-		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{ID: 1}, nil)
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{ID: 1}, nil).Once()
 		mockExpenseRepo.On("Update", mock.Anything, mockExpense).Return(nil)
 
 		err := expenseService.Update(context.TODO(), mockExpense)
@@ -100,7 +100,7 @@ func TestExpenseUpdate(t *testing.T) {
 	})
 
 	t.Run("user not found", func(t *testing.T) {
-		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{}, errors.New("user not found"))
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{}, errors.New("user not found")).Once()
 
 		err := expenseService.Update(context.TODO(), mockExpense)
 
@@ -161,7 +161,7 @@ func TestExpenseGetByUserID(t *testing.T) {
 	}
 
 	t.Run("success", func(t *testing.T) {
-		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{ID: 1}, nil)
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{ID: 1}, nil).Once()
 		mockExpenseRepo.On("GetByUserID", mock.Anything, int64(1)).Return(mockExpenses, nil)
 
 		expenses, err := expenseService.GetByUserID(context.TODO(), 1)
@@ -173,7 +173,7 @@ func TestExpenseGetByUserID(t *testing.T) {
 	})
 
 	t.Run("user not found", func(t *testing.T) {
-		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{}, errors.New("user not found"))
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{}, errors.New("user not found")).Once()
 
 		expenses, err := expenseService.GetByUserID(context.TODO(), 1)
 
