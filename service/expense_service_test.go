@@ -13,42 +13,174 @@ import (
 )
 
 func TestExpenseStore(t *testing.T) {
-	mockExpenseRepository := mocks.NewExpenseRepository(t)
-	mockExpenseRepository.On("Store", mock.Anything, mock.AnythingOfType("*domain.Expense")).Return(nil).Once()
-	mockExpense := domain.Expense{
-		ID:          100,
+	mockExpenseRepo := new(mocks.ExpenseRepository)
+	mockUserRepo := new(mocks.UserRepository)
+	userService := service.NewUserService(mockUserRepo)
+	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+
+	mockExpense := &domain.Expense{
+		ID:          1,
 		User_ID:     1,
-		Amount:      1234,
-		Description: "mockDescription",
-		CreatedAt:   "2019-03-07T15:08:00+00:00",
+		Amount:      100.0,
+		Description: "Test expense",
+		CreatedAt:   "2023-05-01 10:00:00",
 	}
+
 	t.Run("success", func(t *testing.T) {
-		mockUserRepository := mocks.NewUserRepository(t)
-		mockUser := domain.User{
-			ID:        1,
-			Name:      "mockUser",
-			CreatedAt: "2019-03-07 15:08:00 +0000 UTC",
-			UpdatedAt: "2019-03-07 15:08:00 +0000 UTC",
-		}
-		mockUserRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(mockUser, nil)
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{ID: 1}, nil)
+		mockExpenseRepo.On("Store", mock.Anything, mockExpense).Return(nil)
 
-		userService := service.NewUserService(mockUserRepository)
-		expenseService, err := service.NewExpenseService(mockExpenseRepository, userService)
-		assert.NoError(t, err)
-
-		err = expenseService.Store(context.TODO(), &mockExpense)
+		err := expenseService.Store(context.TODO(), mockExpense)
 
 		assert.NoError(t, err)
+		mockUserRepo.AssertExpectations(t)
+		mockExpenseRepo.AssertExpectations(t)
 	})
-	t.Run("user do not exist", func(t *testing.T) {
-		mockUserRepository := mocks.NewUserRepository(t)
-		mockUserRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(domain.User{}, errors.New("user not found"))
 
-		userService := service.NewUserService(mockUserRepository)
-		expenseService, err := service.NewExpenseService(mockExpenseRepository, userService)
-		assert.NoError(t, err)
+	t.Run("user not found", func(t *testing.T) {
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{}, errors.New("user not found"))
 
-		err = expenseService.Store(context.TODO(), &mockExpense)
+		err := expenseService.Store(context.TODO(), mockExpense)
+
 		assert.Error(t, err)
+		assert.EqualError(t, err, "user not found")
+		mockUserRepo.AssertExpectations(t)
+		mockExpenseRepo.AssertNotCalled(t, "Store")
+	})
+}
+
+func TestExpenseGetByID(t *testing.T) {
+	mockExpenseRepo := new(mocks.ExpenseRepository)
+	mockUserRepo := new(mocks.UserRepository)
+	userService := service.NewUserService(mockUserRepo)
+	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+
+	mockExpense := domain.Expense{
+		ID:          1,
+		User_ID:     1,
+		Amount:      100.0,
+		Description: "Test expense",
+		CreatedAt:   "2023-05-01 10:00:00",
+	}
+
+	t.Run("success", func(t *testing.T) {
+		mockExpenseRepo.On("GetByID", mock.Anything, int64(1)).Return(mockExpense, nil)
+
+		expense, err := expenseService.GetByID(context.TODO(), 1)
+
+		assert.NoError(t, err)
+		assert.Equal(t, mockExpense, expense)
+		mockExpenseRepo.AssertExpectations(t)
+	})
+}
+
+func TestExpenseUpdate(t *testing.T) {
+	mockExpenseRepo := new(mocks.ExpenseRepository)
+	mockUserRepo := new(mocks.UserRepository)
+	userService := service.NewUserService(mockUserRepo)
+	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+
+	mockExpense := &domain.Expense{
+		ID:          1,
+		User_ID:     1,
+		Amount:      150.0,
+		Description: "Updated test expense",
+		CreatedAt:   "2023-05-01 10:00:00",
+	}
+
+	t.Run("success", func(t *testing.T) {
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{ID: 1}, nil)
+		mockExpenseRepo.On("Update", mock.Anything, mockExpense).Return(nil)
+
+		err := expenseService.Update(context.TODO(), mockExpense)
+
+		assert.NoError(t, err)
+		mockUserRepo.AssertExpectations(t)
+		mockExpenseRepo.AssertExpectations(t)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{}, errors.New("user not found"))
+
+		err := expenseService.Update(context.TODO(), mockExpense)
+
+		assert.Error(t, err)
+		assert.EqualError(t, err, "user not found")
+		mockUserRepo.AssertExpectations(t)
+		mockExpenseRepo.AssertNotCalled(t, "Update")
+	})
+}
+
+func TestExpenseDelete(t *testing.T) {
+	mockExpenseRepo := new(mocks.ExpenseRepository)
+	mockUserRepo := new(mocks.UserRepository)
+	userService := service.NewUserService(mockUserRepo)
+	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+
+	t.Run("success", func(t *testing.T) {
+		mockExpenseRepo.On("Delete", mock.Anything, int64(1)).Return(nil)
+
+		err := expenseService.Delete(context.TODO(), 1)
+
+		assert.NoError(t, err)
+		mockExpenseRepo.AssertExpectations(t)
+	})
+}
+
+func TestExpenseGetAll(t *testing.T) {
+	mockExpenseRepo := new(mocks.ExpenseRepository)
+	mockUserRepo := new(mocks.UserRepository)
+	userService := service.NewUserService(mockUserRepo)
+	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+
+	mockExpenses := []domain.Expense{
+		{ID: 1, User_ID: 1, Amount: 100.0, Description: "Expense 1", CreatedAt: "2023-05-01 10:00:00"},
+		{ID: 2, User_ID: 1, Amount: 200.0, Description: "Expense 2", CreatedAt: "2023-05-02 10:00:00"},
+	}
+
+	t.Run("success", func(t *testing.T) {
+		mockExpenseRepo.On("GetAll", mock.Anything).Return(mockExpenses, nil)
+
+		expenses, err := expenseService.GetAll(context.TODO())
+
+		assert.NoError(t, err)
+		assert.Equal(t, mockExpenses, expenses)
+		mockExpenseRepo.AssertExpectations(t)
+	})
+}
+
+func TestExpenseGetByUserID(t *testing.T) {
+	mockExpenseRepo := new(mocks.ExpenseRepository)
+	mockUserRepo := new(mocks.UserRepository)
+	userService := service.NewUserService(mockUserRepo)
+	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+
+	mockExpenses := []domain.Expense{
+		{ID: 1, User_ID: 1, Amount: 100.0, Description: "Expense 1", CreatedAt: "2023-05-01 10:00:00"},
+		{ID: 2, User_ID: 1, Amount: 200.0, Description: "Expense 2", CreatedAt: "2023-05-02 10:00:00"},
+	}
+
+	t.Run("success", func(t *testing.T) {
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{ID: 1}, nil)
+		mockExpenseRepo.On("GetByUserID", mock.Anything, int64(1)).Return(mockExpenses, nil)
+
+		expenses, err := expenseService.GetByUserID(context.TODO(), 1)
+
+		assert.NoError(t, err)
+		assert.Equal(t, mockExpenses, expenses)
+		mockUserRepo.AssertExpectations(t)
+		mockExpenseRepo.AssertExpectations(t)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		mockUserRepo.On("GetByID", mock.Anything, int64(1)).Return(domain.User{}, errors.New("user not found"))
+
+		expenses, err := expenseService.GetByUserID(context.TODO(), 1)
+
+		assert.Error(t, err)
+		assert.EqualError(t, err, "user not found")
+		assert.Nil(t, expenses)
+		mockUserRepo.AssertExpectations(t)
+		mockExpenseRepo.AssertNotCalled(t, "GetByUserID")
 	})
 }
