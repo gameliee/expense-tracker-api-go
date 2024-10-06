@@ -2,94 +2,55 @@ package sqlite
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"gamelieelearn/expense-tracker-api-go/domain"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type UserRepository struct {
-	DB *sql.DB
+	DB *gorm.DB
 }
 
-func NewUserRepository(db *sql.DB) *UserRepository {
+func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{DB: db}
 }
 
-func (r *UserRepository) GetByID(ctx context.Context, id int64) (domain.User, error) {
-	query := `SELECT id, name, created_at, updated_at FROM users WHERE id = ?`
-	row := r.DB.QueryRowContext(ctx, query, id)
-
-	var user domain.User
-	err := row.Scan(&user.ID, &user.Name, &user.CreatedAt, &user.UpdatedAt)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return domain.User{}, errors.New("user not found")
-		}
-		return domain.User{}, err
+func (r *UserRepository) GetByID(ctx context.Context, id int64) (user domain.User, err error) {
+	r.DB.First(&user, id)
+	if user == (domain.User{}) {
+		err = errors.New("user not found")
 	}
 
-	return user, nil
+	return user, err
 }
 
 func (r *UserRepository) Store(ctx context.Context, u *domain.User) error {
-	query := `INSERT INTO users (name, created_at, updated_at) VALUES (?, ?, ?)`
 	now := time.Now().Format(time.RFC3339)
-	result, err := r.DB.ExecContext(ctx, query, u.Name, now, now)
-	if err != nil {
-		return err
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
-
-	u.ID = id
 	u.CreatedAt = now
 	u.UpdatedAt = now
-	return nil
+	result := r.DB.Create(u)
+	return result.Error
 }
 
 func (r *UserRepository) Update(ctx context.Context, u *domain.User) error {
-	query := `UPDATE users SET name = ?, updated_at = ? WHERE id = ?`
-	now := time.Now().Format(time.RFC3339)
-	_, err := r.DB.ExecContext(ctx, query, u.Name, now, u.ID)
-	if err != nil {
-		return err
+	result := r.DB.First(u)
+	if result.Error != nil {
+		return result.Error
 	}
-
-	u.UpdatedAt = now
-	return nil
+	u.UpdatedAt = time.Now().Format(time.RFC3339)
+	result = r.DB.Save(u)
+	return result.Error
 }
 
 func (r *UserRepository) Delete(ctx context.Context, id int64) error {
-	query := `DELETE FROM users WHERE id = ?`
-	_, err := r.DB.ExecContext(ctx, query, id)
-	return err
+	result := r.DB.Delete(&domain.User{}, id)
+	return result.Error
 }
 
-func (r *UserRepository) GetAll(ctx context.Context) ([]domain.User, error) {
-	query := `SELECT id, name, created_at, updated_at FROM users`
-	rows, err := r.DB.QueryContext(ctx, query)
-	if err != nil {
-		return []domain.User{}, err
-	}
-	defer rows.Close()
-
-	var users []domain.User
-	for rows.Next() {
-		var user domain.User
-		err := rows.Scan(&user.ID, &user.Name, &user.CreatedAt, &user.UpdatedAt)
-		if err != nil {
-			return []domain.User{}, err
-		}
-		users = append(users, user)
-	}
-
-	if err = rows.Err(); err != nil {
-		return []domain.User{}, err
-	}
-
-	return users, nil
+func (r *UserRepository) GetAll(ctx context.Context) (users []domain.User, err error) {
+	result := r.DB.Find(&users)
+	err = result.Error
+	return
 }
