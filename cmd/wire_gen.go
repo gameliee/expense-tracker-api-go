@@ -15,7 +15,6 @@ import (
 
 import (
 	_ "gamelieelearn/expense-tracker-api-go/docs"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 // Injectors from wire.go:

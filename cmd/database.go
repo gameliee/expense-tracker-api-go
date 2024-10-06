@@ -1,24 +1,20 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 
-	"gamelieelearn/expense-tracker-api-go/config"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 
-	_ "github.com/mattn/go-sqlite3"
+	"gamelieelearn/expense-tracker-api-go/config"
 )
 
 // InitDB initializes the database connection
-func InitDB(cfg *config.Config) (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", cfg.DatabasePath)
+func InitDB(cfg *config.Config) (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite.Open(cfg.DatabasePath), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("error opening database: %w", err)
-	}
-
-	if err = db.Ping(); err != nil {
-		return nil, fmt.Errorf("error connecting to database: %w", err)
 	}
 
 	log.Println("Database connection established")
