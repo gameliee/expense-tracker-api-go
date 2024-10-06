@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+//go:generate mockery --name=ExpenseServiceInt --structname=ExpenseService
 type ExpenseServiceInt interface {
 	Store(ctx context.Context, expense *domain.Expense) error
 	GetByID(ctx context.Context, id int64) (domain.Expense, error)

@@ -14,6 +14,7 @@ type ResponseError struct {
 	Message string `json:"message"`
 }
 
+//go:generate mockery --name=UserServiceInt --struct=UserService
 type UserServiceInt interface {
 	Store(ctx context.Context, u *domain.User) error
 	GetByID(ctx context.Context, id int64) (domain.User, error)
