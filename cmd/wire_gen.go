@@ -11,23 +11,23 @@ import (
 	"gamelieelearn/expense-tracker-api-go/internal/http"
 	"gamelieelearn/expense-tracker-api-go/internal/repository/sqlite"
 	"gamelieelearn/expense-tracker-api-go/service"
-	"github.com/labstack/echo/v4"
 )
 
 import (
+	_ "gamelieelearn/expense-tracker-api-go/docs"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 // Injectors from wire.go:
 
-func InitializeContainer() (*echo.Echo, error) {
+func InitializeContainer() (*Container, error) {
 	configConfig := config.NewConfig()
 	db, err := InitDB(configConfig)
 	if err != nil {
 		return nil, err
 	}
 	userRepository := sqlite.NewUserRepository(db)
-	expenseRepository := sqlite.NewExpenseRepository()
+	expenseRepository := sqlite.NewExpenseRepository(db)
 	userService := service.NewUserService(userRepository)
 	expenseService, err := service.NewExpenseService(expenseRepository, userService)
 	if err != nil {
@@ -35,10 +35,10 @@ func InitializeContainer() (*echo.Echo, error) {
 	}
 	userHandler := http.NewUserHandler(userService)
 	expenseHandler := http.NewExpenseHandler(expenseService)
-	container := NewContainer(configConfig, userRepository, expenseRepository, userService, expenseService, userHandler, expenseHandler)
-	echoEcho, err := InitHttp(container)
+	echo, err := InitHttp()
 	if err != nil {
 		return nil, err
 	}
-	return echoEcho, nil
+	container := NewContainer(configConfig, userRepository, expenseRepository, userService, expenseService, userHandler, expenseHandler, echo, db)
+	return container, nil
 }

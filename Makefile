@@ -9,4 +9,4 @@ swag:
 	swag fmt
 
 test:
-	go test ./...
+	go test ./... --cover
