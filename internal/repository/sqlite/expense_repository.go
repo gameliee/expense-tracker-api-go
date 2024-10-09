@@ -10,11 +10,7 @@ import (
 )
 
 type ExpenseRepository struct {
-	DB *gorm.DB
-}
-
-func NewExpenseRepository(db *gorm.DB) *ExpenseRepository {
-	return &ExpenseRepository{DB: db}
+	DB *gorm.DB `inject:"*gorm.DB"`
 }
 
 func (r *ExpenseRepository) Store(ctx context.Context, expense *domain.Expense) error {

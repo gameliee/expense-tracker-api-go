@@ -24,13 +24,7 @@ type UserServiceInt interface {
 }
 
 type UserHandler struct {
-	UserService UserServiceInt
-}
-
-func NewUserHandler(userService UserServiceInt) *UserHandler {
-	return &UserHandler{
-		UserService: userService,
-	}
+	UserService UserServiceInt `inject:"*service.UserService"`
 }
 
 // CreateUser godoc

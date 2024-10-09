@@ -16,15 +16,8 @@ type ExpenseRepositoryInt interface {
 }
 
 type ExpenseService struct {
-	ExpenseRepository ExpenseRepositoryInt
-	UserService       *UserService
-}
-
-func NewExpenseService(expenseRepository ExpenseRepositoryInt, userService *UserService) (*ExpenseService, error) {
-	return &ExpenseService{
-		ExpenseRepository: expenseRepository,
-		UserService:       userService,
-	}, nil
+	ExpenseRepository ExpenseRepositoryInt `inject:"*sqlite.ExpenseRepository"`
+	UserService       *UserService         `inject:"*service.UserService"`
 }
 
 func (s *ExpenseService) Store(ctx context.Context, expense *domain.Expense) error {

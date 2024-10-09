@@ -20,13 +20,7 @@ type ExpenseServiceInt interface {
 }
 
 type ExpenseHandler struct {
-	ExpenseService ExpenseServiceInt
-}
-
-func NewExpenseHandler(expenseService ExpenseServiceInt) *ExpenseHandler {
-	return &ExpenseHandler{
-		ExpenseService: expenseService,
-	}
+	ExpenseService ExpenseServiceInt `inject:"*service.ExpenseService"`
 }
 
 // CreateExpense godoc

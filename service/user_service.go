@@ -15,11 +15,7 @@ type UserRepositoryInt interface {
 }
 
 type UserService struct {
-	UserRepository UserRepositoryInt
-}
-
-func NewUserService(userRepository UserRepositoryInt) *UserService {
-	return &UserService{UserRepository: userRepository}
+	UserRepository UserRepositoryInt `inject:"*sqlite.UserRepository"`
 }
 
 func (s *UserService) Store(ctx context.Context, u *domain.User) error {
