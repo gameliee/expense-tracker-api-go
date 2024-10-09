@@ -15,8 +15,8 @@ import (
 func TestExpenseStore(t *testing.T) {
 	mockExpenseRepo := new(mocks.ExpenseRepository)
 	mockUserRepo := new(mocks.UserRepository)
-	userService := service.NewUserService(mockUserRepo)
-	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+	userService := &service.UserService{UserRepository: mockUserRepo}
+	expenseService := &service.ExpenseService{ExpenseRepository: mockExpenseRepo, UserService: userService}
 
 	mockExpense := &domain.Expense{
 		ID:          1,
@@ -52,8 +52,8 @@ func TestExpenseStore(t *testing.T) {
 func TestExpenseGetByID(t *testing.T) {
 	mockExpenseRepo := new(mocks.ExpenseRepository)
 	mockUserRepo := new(mocks.UserRepository)
-	userService := service.NewUserService(mockUserRepo)
-	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+	userService := &service.UserService{UserRepository: mockUserRepo}
+	expenseService := &service.ExpenseService{ExpenseRepository: mockExpenseRepo, UserService: userService}
 
 	mockExpense := domain.Expense{
 		ID:          1,
@@ -77,8 +77,8 @@ func TestExpenseGetByID(t *testing.T) {
 func TestExpenseUpdate(t *testing.T) {
 	mockExpenseRepo := new(mocks.ExpenseRepository)
 	mockUserRepo := new(mocks.UserRepository)
-	userService := service.NewUserService(mockUserRepo)
-	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+	userService := &service.UserService{UserRepository: mockUserRepo}
+	expenseService := &service.ExpenseService{ExpenseRepository: mockExpenseRepo, UserService: userService}
 
 	mockExpense := &domain.Expense{
 		ID:          1,
@@ -114,8 +114,8 @@ func TestExpenseUpdate(t *testing.T) {
 func TestExpenseDelete(t *testing.T) {
 	mockExpenseRepo := new(mocks.ExpenseRepository)
 	mockUserRepo := new(mocks.UserRepository)
-	userService := service.NewUserService(mockUserRepo)
-	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+	userService := &service.UserService{UserRepository: mockUserRepo}
+	expenseService := &service.ExpenseService{ExpenseRepository: mockExpenseRepo, UserService: userService}
 
 	t.Run("success", func(t *testing.T) {
 		mockExpenseRepo.On("Delete", mock.Anything, int64(1)).Return(nil)
@@ -130,8 +130,8 @@ func TestExpenseDelete(t *testing.T) {
 func TestExpenseGetAll(t *testing.T) {
 	mockExpenseRepo := new(mocks.ExpenseRepository)
 	mockUserRepo := new(mocks.UserRepository)
-	userService := service.NewUserService(mockUserRepo)
-	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+	userService := &service.UserService{UserRepository: mockUserRepo}
+	expenseService := &service.ExpenseService{ExpenseRepository: mockExpenseRepo, UserService: userService}
 
 	mockExpenses := []domain.Expense{
 		{ID: 1, User_ID: 1, Amount: 100.0, Description: "Expense 1", CreatedAt: "2023-05-01 10:00:00"},
@@ -152,8 +152,8 @@ func TestExpenseGetAll(t *testing.T) {
 func TestExpenseGetByUserID(t *testing.T) {
 	mockExpenseRepo := new(mocks.ExpenseRepository)
 	mockUserRepo := new(mocks.UserRepository)
-	userService := service.NewUserService(mockUserRepo)
-	expenseService, _ := service.NewExpenseService(mockExpenseRepo, userService)
+	userService := &service.UserService{UserRepository: mockUserRepo}
+	expenseService := &service.ExpenseService{ExpenseRepository: mockExpenseRepo, UserService: userService}
 
 	mockExpenses := []domain.Expense{
 		{ID: 1, User_ID: 1, Amount: 100.0, Description: "Expense 1", CreatedAt: "2023-05-01 10:00:00"},
