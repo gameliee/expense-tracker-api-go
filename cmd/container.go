@@ -3,45 +3,43 @@ package main
 import (
 	"gamelieelearn/expense-tracker-api-go/config"
 	"gamelieelearn/expense-tracker-api-go/internal/http"
-	sqliteRepo "gamelieelearn/expense-tracker-api-go/internal/repository/sqlite"
+	"gamelieelearn/expense-tracker-api-go/internal/repository/sqlite"
 	"gamelieelearn/expense-tracker-api-go/service"
-
-	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
+	"gamelieelearn/expense-tracker-api-go/tools"
+	"sync"
 )
 
-type Container struct {
-	Config            *config.Config
-	UserRepository    *sqliteRepo.UserRepository
-	ExpenseRepository *sqliteRepo.ExpenseRepository
-	UserService       *service.UserService
-	ExpenseService    *service.ExpenseService
-	UserHandler       *http.UserHandler
-	ExpenseHandler    *http.ExpenseHandler
-	EchoServer        *echo.Echo
-	DB                *gorm.DB
+var (
+	container *tools.Container
+	once      sync.Once
+)
+
+func GetContainer() *tools.Container {
+	once.Do(func() {
+		container = tools.NewContainer()
+	})
+	return container
 }
 
-func NewContainer(
-	config *config.Config,
-	userRepository *sqliteRepo.UserRepository,
-	expenseRepository *sqliteRepo.ExpenseRepository,
-	userService *service.UserService,
-	expenseService *service.ExpenseService,
-	userHandler *http.UserHandler,
-	expenseHandler *http.ExpenseHandler,
-	echoServer *echo.Echo,
-	db *gorm.DB,
-) *Container {
-	return &Container{
-		Config:            config,
-		UserRepository:    userRepository,
-		ExpenseRepository: expenseRepository,
-		UserService:       userService,
-		ExpenseService:    expenseService,
-		UserHandler:       userHandler,
-		ExpenseHandler:    expenseHandler,
-		EchoServer:        echoServer,
-		DB:                db,
+func InitializeContainer() error {
+	c := GetContainer()
+	config := config.NewConfig()
+	db, err := InitDB(config)
+	if err != nil {
+		return err
 	}
+	c.RegisterInstance(config)
+	c.RegisterInstance(db)
+	c.RegisterInstance(&sqlite.ExpenseRepository{})
+	c.RegisterInstance(&sqlite.UserRepository{})
+	c.RegisterInstance(&service.UserService{})
+	c.RegisterInstance(&service.ExpenseService{})
+	c.RegisterInstance(&http.UserHandler{})
+	c.RegisterInstance(&http.ExpenseHandler{})
+	echo, err := InitHttp()
+	if err != nil {
+		return err
+	}
+	c.RegisterInstance(echo)
+	return c.Build()
 }

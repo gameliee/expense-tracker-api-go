@@ -21,8 +21,8 @@ func TestUserGetById(t *testing.T) {
 	}
 	t.Run("simple get", func(t *testing.T) {
 		mockUserRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(mockUser, nil)
+		userService := &service.UserService{UserRepository: mockUserRepository}
 
-		userService := service.NewUserService(mockUserRepository)
 		user, err := userService.GetByID(context.TODO(), 1)
 		assert.NoError(t, err)
 		assert.NotNil(t, user)
@@ -44,7 +44,8 @@ func TestUserStore(t *testing.T) {
 		tempMockUser := mockUser
 		tempMockUser.ID = 0
 
-		userService := service.NewUserService(mockUserRepository)
+		userService := &service.UserService{UserRepository: mockUserRepository}
+
 		err := userService.Store(context.TODO(), &mockUser)
 
 		assert.NoError(t, err)
@@ -63,7 +64,8 @@ func TestUserUpdate(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		mockUserRepository.On("Update", mock.Anything, mock.AnythingOfType("*domain.User")).Return(nil).Once()
 
-		userService := service.NewUserService(mockUserRepository)
+		userService := &service.UserService{UserRepository: mockUserRepository}
+
 		err := userService.Update(context.TODO(), &mockUser)
 
 		assert.NoError(t, err)
@@ -76,7 +78,8 @@ func TestUserDelete(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		mockUserRepository.On("Delete", mock.Anything, mock.AnythingOfType("int64")).Return(nil).Once()
 
-		userService := service.NewUserService(mockUserRepository)
+		userService := &service.UserService{UserRepository: mockUserRepository}
+
 		err := userService.Delete(context.TODO(), 1)
 
 		assert.NoError(t, err)
@@ -103,7 +106,8 @@ func TestUserGetAll(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		mockUserRepository.On("GetAll", mock.Anything).Return(mockUsers, nil).Once()
 
-		userService := service.NewUserService(mockUserRepository)
+		userService := &service.UserService{UserRepository: mockUserRepository}
+
 		users, err := userService.GetAll(context.TODO())
 
 		assert.NoError(t, err)

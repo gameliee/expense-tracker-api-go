@@ -14,7 +14,7 @@ type ResponseError struct {
 	Message string `json:"message"`
 }
 
-//go:generate mockery --name=UserServiceInt --struct=UserService
+//go:generate mockery --name=UserServiceInt --structname=UserService
 type UserServiceInt interface {
 	Store(ctx context.Context, u *domain.User) error
 	GetByID(ctx context.Context, id int64) (domain.User, error)
@@ -24,13 +24,7 @@ type UserServiceInt interface {
 }
 
 type UserHandler struct {
-	UserService UserServiceInt
-}
-
-func NewUserHandler(userService UserServiceInt) *UserHandler {
-	return &UserHandler{
-		UserService: userService,
-	}
+	UserService UserServiceInt `inject:"*service.UserService"`
 }
 
 // CreateUser godoc

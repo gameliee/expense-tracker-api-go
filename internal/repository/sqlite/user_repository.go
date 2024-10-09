@@ -10,11 +10,7 @@ import (
 )
 
 type UserRepository struct {
-	DB *gorm.DB
-}
-
-func NewUserRepository(db *gorm.DB) *UserRepository {
-	return &UserRepository{DB: db}
+	DB *gorm.DB `inject:"*gorm.DB"`
 }
 
 func (r *UserRepository) GetByID(ctx context.Context, id int64) (user domain.User, err error) {
