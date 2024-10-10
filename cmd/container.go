@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"gamelieelearn/expense-tracker-api-go/config"

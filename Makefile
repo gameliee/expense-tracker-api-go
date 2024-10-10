@@ -1,5 +1,5 @@
 build:
-	@ go build -trimpath -o app ./cmd/
+	@ go build -trimpath -o app .
 
 go-generate:
 	go generate ./...
