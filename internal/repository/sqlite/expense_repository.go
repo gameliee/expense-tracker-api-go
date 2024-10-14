@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"gamelieelearn/expense-tracker-api-go/domain"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -14,9 +13,6 @@ type ExpenseRepository struct {
 }
 
 func (r *ExpenseRepository) Store(ctx context.Context, expense *domain.Expense) error {
-	now := time.Now().Format(time.RFC3339)
-	expense.CreatedAt = now
-	expense.UpdatedAt = now
 	result := r.DB.Create(expense)
 	return result.Error
 }
@@ -30,8 +26,20 @@ func (r *ExpenseRepository) GetByID(ctx context.Context, id int64) (expense doma
 }
 
 func (r *ExpenseRepository) Update(ctx context.Context, expense *domain.Expense) error {
-	expense.UpdatedAt = time.Now().Format(time.RFC3339)
-	result := r.DB.Save(expense)
+	existingExpense := domain.Expense{}
+	result := r.DB.First(&existingExpense, expense.ID)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return errors.New("expense not found")
+	}
+
+	updates := domain.Expense{
+		User_ID:     expense.User_ID,
+		Name:        expense.Name,
+		Description: expense.Description,
+		Amount:      expense.Amount,
+	}
+
+	result = r.DB.Model(&existingExpense).Updates(updates)
 	return result.Error
 }
 

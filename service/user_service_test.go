@@ -14,10 +14,8 @@ import (
 func TestUserGetById(t *testing.T) {
 	mockUserRepository := mocks.NewUserRepository(t)
 	mockUser := domain.User{
-		ID:        1,
-		Name:      "mockUser",
-		CreatedAt: "2019-03-07 15:08:00 +0000 UTC",
-		UpdatedAt: "2019-03-07 15:08:00 +0000 UTC",
+		ID:   1,
+		Name: "mockUser",
 	}
 	t.Run("simple get", func(t *testing.T) {
 		mockUserRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(mockUser, nil)
@@ -34,10 +32,8 @@ func TestUserGetById(t *testing.T) {
 func TestUserStore(t *testing.T) {
 	mockUserRepository := mocks.NewUserRepository(t)
 	mockUser := domain.User{
-		ID:        1,
-		Name:      "mockUser",
-		CreatedAt: "2019-03-07 15:08:00 +0000 UTC",
-		UpdatedAt: "2019-03-07 15:08:00 +0000 UTC",
+		ID:   1,
+		Name: "mockUser",
 	}
 	t.Run("success", func(t *testing.T) {
 		mockUserRepository.On("Store", mock.Anything, mock.AnythingOfType("*domain.User")).Return(nil).Once()
@@ -56,10 +52,8 @@ func TestUserStore(t *testing.T) {
 func TestUserUpdate(t *testing.T) {
 	mockUserRepository := mocks.NewUserRepository(t)
 	mockUser := domain.User{
-		ID:        1,
-		Name:      "updatedUser",
-		CreatedAt: "2019-03-07 15:08:00 +0000 UTC",
-		UpdatedAt: "2019-03-08 15:08:00 +0000 UTC",
+		ID:   1,
+		Name: "updatedUser",
 	}
 	t.Run("success", func(t *testing.T) {
 		mockUserRepository.On("Update", mock.Anything, mock.AnythingOfType("*domain.User")).Return(nil).Once()
@@ -91,16 +85,12 @@ func TestUserGetAll(t *testing.T) {
 	mockUserRepository := mocks.NewUserRepository(t)
 	mockUsers := []domain.User{
 		{
-			ID:        1,
-			Name:      "user1",
-			CreatedAt: "2019-03-07 15:08:00 +0000 UTC",
-			UpdatedAt: "2019-03-07 15:08:00 +0000 UTC",
+			ID:   1,
+			Name: "user1",
 		},
 		{
-			ID:        2,
-			Name:      "user2",
-			CreatedAt: "2019-03-08 15:08:00 +0000 UTC",
-			UpdatedAt: "2019-03-08 15:08:00 +0000 UTC",
+			ID:   2,
+			Name: "user2",
 		},
 	}
 	t.Run("success", func(t *testing.T) {
