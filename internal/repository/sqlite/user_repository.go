@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"gamelieelearn/expense-tracker-api-go/domain"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -23,20 +22,12 @@ func (r *UserRepository) GetByID(ctx context.Context, id int64) (user domain.Use
 }
 
 func (r *UserRepository) Store(ctx context.Context, u *domain.User) error {
-	now := time.Now().Format(time.RFC3339)
-	u.CreatedAt = now
-	u.UpdatedAt = now
 	result := r.DB.Create(u)
 	return result.Error
 }
 
 func (r *UserRepository) Update(ctx context.Context, u *domain.User) error {
-	result := r.DB.First(u)
-	if result.Error != nil {
-		return result.Error
-	}
-	u.UpdatedAt = time.Now().Format(time.RFC3339)
-	result = r.DB.Save(u)
+	result := r.DB.Save(u)
 	return result.Error
 }
 

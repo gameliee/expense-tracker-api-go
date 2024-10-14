@@ -23,7 +23,6 @@ func TestExpenseStore(t *testing.T) {
 		User_ID:     1,
 		Amount:      100.0,
 		Description: "Test expense",
-		CreatedAt:   "2023-05-01 10:00:00",
 	}
 
 	t.Run("success", func(t *testing.T) {
@@ -60,7 +59,6 @@ func TestExpenseGetByID(t *testing.T) {
 		User_ID:     1,
 		Amount:      100.0,
 		Description: "Test expense",
-		CreatedAt:   "2023-05-01 10:00:00",
 	}
 
 	t.Run("success", func(t *testing.T) {
@@ -85,7 +83,6 @@ func TestExpenseUpdate(t *testing.T) {
 		User_ID:     1,
 		Amount:      150.0,
 		Description: "Updated test expense",
-		CreatedAt:   "2023-05-01 10:00:00",
 	}
 
 	t.Run("success", func(t *testing.T) {
@@ -134,8 +131,8 @@ func TestExpenseGetAll(t *testing.T) {
 	expenseService := &service.ExpenseService{ExpenseRepository: mockExpenseRepo, UserService: userService}
 
 	mockExpenses := []domain.Expense{
-		{ID: 1, User_ID: 1, Amount: 100.0, Description: "Expense 1", CreatedAt: "2023-05-01 10:00:00"},
-		{ID: 2, User_ID: 1, Amount: 200.0, Description: "Expense 2", CreatedAt: "2023-05-02 10:00:00"},
+		{ID: 1, User_ID: 1, Amount: 100.0, Description: "Expense 1"},
+		{ID: 2, User_ID: 1, Amount: 200.0, Description: "Expense 2"},
 	}
 
 	t.Run("success", func(t *testing.T) {
@@ -156,8 +153,8 @@ func TestExpenseGetByUserID(t *testing.T) {
 	expenseService := &service.ExpenseService{ExpenseRepository: mockExpenseRepo, UserService: userService}
 
 	mockExpenses := []domain.Expense{
-		{ID: 1, User_ID: 1, Amount: 100.0, Description: "Expense 1", CreatedAt: "2023-05-01 10:00:00"},
-		{ID: 2, User_ID: 1, Amount: 200.0, Description: "Expense 2", CreatedAt: "2023-05-02 10:00:00"},
+		{ID: 1, User_ID: 1, Amount: 100.0, Description: "Expense 1"},
+		{ID: 2, User_ID: 1, Amount: 200.0, Description: "Expense 2"},
 	}
 
 	t.Run("success", func(t *testing.T) {

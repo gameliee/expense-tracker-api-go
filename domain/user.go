@@ -4,8 +4,6 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	ID        int64  `json:"id"`
-	Name      string `json:"name"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
 }
