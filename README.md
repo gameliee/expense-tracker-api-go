@@ -6,16 +6,18 @@ A simple expense tracker in Go
 - Dependency injection using `wire`
 
 ```text
+├── main.go          # main
 ├── cmd
 │   ├── container.go # singleton container
-│   ├── main.go  # application startup point   
-│   ├── wire.go  # Injection
-│   └── wire_gen.go  # Generate by Injection
+│   ├── database.go    
+│   ├── http_server.go
+│   └── app.go       # init application
 ├── config
 │   └── config.go
 ├── domain          # Domain goes here
 │   ├── expense.go 
 │   └── user.go
+├── docs            # Swagger docs
 ├── go.mod
 ├── go.sum
 ├── internal        # Infrastructure
@@ -27,9 +29,13 @@ A simple expense tracker in Go
 │   │       ├── expense_repository.go
 │   │       └── user_repository.go
 │   └── workers
-└── service         # Business logics go here
-    ├── expense_service.go
-    └── user_service.go
+├── tests           # Test all the layers
+├── service         # Business logics go here
+│   ├── expense_service.go
+│   └── user_service.go
+└── tools
+    ├── dependency_injector.go   # Field DI
+    └── dependency_injector_test.go
 ```
 
 Dependencies
